@@ -8,7 +8,7 @@ import (
 // it has the complexity of O(nlogn),
 // it is also a stable sort algorithm
 
-func merge[T constraints.Ordered](array []T, begin, mid, end int) {
+func Merge[T constraints.Ordered](array []T, begin, mid, end int) {
 	sz := end - begin // the size of the sub array
 	tempArr := make([]T, sz)
 	indexFirstArr := begin
@@ -55,7 +55,7 @@ func mergeSortImp[T constraints.Ordered](array []T, begin int, end int) {
 	mid := (begin + end) / 2
 	mergeSortImp(array, begin, mid) // sort array from begin to mid
 	mergeSortImp(array, mid, end)   // sort array from mid to end
-	merge(array, begin, mid, end)   // merge the entire array into one
+	Merge(array, begin, mid, end)   // merge the entire array into one
 
 }
 
