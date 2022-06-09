@@ -43,6 +43,16 @@ func QuickSortImp[T constraints.Ordered](array []T, begin, end int) {
 
 }
 
+/*
+	The QuickSort method have this caracteristics
+	Divider and conquer algorithm
+	It is an in-place algorithm
+	It is not stable, so elements that are considered equal can change orders
+	@Complexity
+	It's complexity is O(nlogn) -- overall. Worst complexity is O(n^2)
+	This chan happen if we choose the greatest or smallest element of the sub array
+	The best complexity is O(n), if we pick the middle element of the sub array
+*/
 func QuickSort[T constraints.Ordered](array []T) {
 	QuickSortImp(array, 0, len(array))
 }
