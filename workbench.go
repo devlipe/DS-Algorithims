@@ -10,10 +10,10 @@ import (
 
 func main() {
 	rand.Seed(time.Now().Unix())
-	permutation := rand.Perm(10)
+	permutation := rand.Perm(50)
 
 	fmt.Println(permutation)
-	sort.QuickSort(permutation)
+	sort.TimSort(permutation)
 	fmt.Println(permutation)
 	//	arrSz := 10000
 	// arrSz := 10
