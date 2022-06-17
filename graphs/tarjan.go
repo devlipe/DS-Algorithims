@@ -1,6 +1,6 @@
 package graphs
 
-// Tarjan algorithm for finding strongly connected components
+// Tarjan algorithm for finding bridges and articulations in a graph
 //in a directed graph.
 
 // Pair struct with generich types
