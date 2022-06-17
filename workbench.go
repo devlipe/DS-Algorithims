@@ -26,11 +26,6 @@ func main() {
 	// fmt.Println(array)
 	//
 
-	matrix := make([][]int, 10)
-	matrix[0] = append(matrix[0], 12, 11, 10, 12)
-	fmt.Println(matrix)
-	for i := 0; i < 10; i++ {
-		matrix[i] = make([]int, 10)
-	}
+	matrix := make([]int, 0, 10)
 	fmt.Println(matrix)
 }
