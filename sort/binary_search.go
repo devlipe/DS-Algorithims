@@ -42,4 +42,14 @@ func BinarySearchInterative[T constraints.Ordered](array []T, key T) int {
 		}
 	}
 	return -1
+
+}
+
+func SequentialSearch[T constraints.Ordered](array []T, key T) int {
+	for i, v := range array {
+		if v == key {
+			return i
+		}
+	}
+	return -1
 }

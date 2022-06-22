@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 	// rand.Seed(time.Now().Unix())
 	// permutation := rand.Perm(50)
@@ -25,7 +23,16 @@ func main() {
 	// }
 	// fmt.Println(array)
 	//
+	// array := rand.Perm(50)
+	// fmt.Println(len(array))
+	// //Calculate the memory used by the Slice
+	// var mem runtime.MemStats
+	// runtime.ReadMemStats(&mem)
+	// fmt.Println("Memor used : ", mem.Alloc)
+	a := []int{}
 
-	matrix := make([]int, 0, 10)
-	fmt.Println(matrix)
+	for i := 0; i < 1000; i++ {
+		a = append(a, i)
+	}
+
 }
