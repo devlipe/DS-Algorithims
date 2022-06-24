@@ -46,7 +46,7 @@ func NewDigraph[T Vertex]() *Graph[T] {
 
 // Add a new vertex to te graph
 func (g *Graph[T]) AddVertex(v T) {
-	if _, exists := g.AdjList[v]; exists {
+	if _, exists := g.AdjList[v]; !exists {
 		g.AdjList[v] = NewSet[HalfEdge[T]]()
 	}
 }
