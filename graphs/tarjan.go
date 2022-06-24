@@ -1,5 +1,7 @@
 package graphs
 
+import "golang.org/x/exp/constraints"
+
 // Tarjan algorithm for finding bridges and articulations in a graph
 //in a directed graph.
 
@@ -10,7 +12,7 @@ type Pair[T, U any] struct {
 }
 
 //Create a min function that return the minimum of two integers
-func min(a, b int) int {
+func min[T constraints.Ordered](a, b T) T {
 	if a < b {
 		return a
 	}
