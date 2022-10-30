@@ -33,7 +33,7 @@ func GenerateKeys() *RSAkey {
 	rand.Seed(time.Now().Unix())
 	// max := uint64(math.Sqrt(math.MaxUint64))
 	// threshold_p, threshold_q := randUint64(max/100, max/10)
-	threshold_p, threshold_q := randUint64(1000000, 10000000)
+	threshold_p, threshold_q := randUint64(1000000, 100000000)
 
 	// Generate the first prime number
 	p := primes.PreviousPrime(threshold_p)

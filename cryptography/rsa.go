@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"log"
 
 	"github.com/devlipe/data_structures/calc"
 )
 
-// FIXME: Receive a byte array and return a byte array
-func (k *RSAkey) Encrypt(bt []byte) []uint64 {
+func (k *RSAkey) Encrypt(bt []byte) []byte {
 
 	eBuff := new(bytes.Buffer)
 	temp := make([]uint64, 0)
@@ -20,35 +20,24 @@ func (k *RSAkey) Encrypt(bt []byte) []uint64 {
 	err := binary.Write(eBuff, binary.BigEndian, temp)
 
 	if err != nil {
-		fmt.Println("binary.Write failed:", err)
+		log.Fatalln("binary.Write failed:", err)
 	}
 
-	return temp
+	return eBuff.Bytes()
 }
 
-// FIXME: Receive a byte array and return a byte array
-func (k *RSAkey) Decrypt(bt []uint64) []byte {
-	// temp := make([]uint64, (len(bt)+7)/8)
-	// buf := bytes.NewBuffer(bt)
-	// fmt.Println("bt: ", bt)
-	// binary.Read(buf, binary.BigEndian, &temp)
-	// fmt.Println("temp: ", temp)
-	// for _, b := range temp {
-	//
-	// 	fmt.Println("bt: ", b)
-	// 	// a := calc.ModExp(b, d, n)
-	// 	// decoded = append(decoded, byte(a))
-	// }
-	// return bt
+func (k *RSAkey) Decrypt(bt []byte) []byte {
+	temp := make([]uint64, (len(bt)+7)/8)
+	buf := bytes.NewBuffer(bt)
+	binary.Read(buf, binary.BigEndian, &temp)
+	dBuff := new(bytes.Buffer)
 
-	decoded := make([]byte, 0)
+	for _, b := range temp {
 
-	for _, b := range bt {
 		a := calc.ChineseRemainderRSA(k.p, k.q, k.dp, k.dq, k.qinv, b)
-		decoded = append(decoded, byte(a))
+		dBuff.WriteByte(byte(a))
 	}
-
-	return decoded
+	return dBuff.Bytes()
 }
 
 // Print a key information in a human readable format
