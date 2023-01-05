@@ -10,8 +10,3 @@ require (
 	github.com/stretchr/testify v1.7.2
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-require (
-	github.com/bytom/bytom v1.1.1
-	github.com/johncgriffin/overflow v0.0.0-20211019200055-46fa312c352c
-)

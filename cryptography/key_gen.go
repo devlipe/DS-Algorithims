@@ -1,62 +1,65 @@
 package cryptography
 
 import (
-	"math"
-	"math/rand"
-	"time"
-
-	"github.com/devlipe/data_structures/calc"
-	"github.com/devlipe/data_structures/primes"
+	"crypto/rand"
+	"log"
+	"math/big"
 )
 
-// Generate a uint64 from range min to max
-func randUint64(min, max uint64) (uint64, uint64) {
-	rand.Seed(time.Now().UnixNano())
-	a := rand.Uint64()%(max-min) + min
-	b := rand.Uint64()%(max-min) + min
-	return a, b
-}
+func findE(totient *big.Int) *big.Int {
+	e := big.NewInt(int64(1<<16 + 1))
+	for e.Cmp(totient) < 0 {
 
-func findE(totient uint64) uint64 {
-	var e uint64 = 65540
-	for e < totient {
-		if calc.GCD(e, totient) == 1 {
+		if new(big.Int).GCD(nil, nil, e, totient).Cmp(big.NewInt(1)) == 0 {
 			return e
 		}
-		e++
+		e.Add(e, big.NewInt(1))
 	}
-	return 0
+	log.Fatalln("Could not find a valid e")
+	return nil
 }
 
 func GenerateKeys() *RSAkey {
 	// Fist we need to generate two prime numbers
-	rand.Seed(time.Now().Unix())
-	// max := uint64(math.Sqrt(math.MaxUint64))
-	// threshold_p, threshold_q := randUint64(max/100, max/10)
-	threshold_p, threshold_q := randUint64(1000000, 100000000)
-
+	// for n to have 2048 bits, we need to generate primes with 1024 bits
 	// Generate the first prime number
-	p := primes.PreviousPrime(threshold_p)
-
+	p, err := rand.Prime(rand.Reader, 1024)
 	// Generate the second prime number
-	q := primes.PreviousPrime(threshold_q)
-	// Calculate the modulus
-	n := p * q
+	q, err := rand.Prime(rand.Reader, 1024)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Calculate n
+	n := new(big.Int).Mul(p, q)
 
 	// Calculate the totient
-	totient := uint64(math.Abs(float64((p-1)*(q-1)))) / calc.GCD(p-1, q-1)
+	pMinusOne := new(big.Int).Sub(p, big.NewInt(1))
+	qMinusOne := new(big.Int).Sub(q, big.NewInt(1))
+	PHI := new(big.Int).Mul(pMinusOne, qMinusOne)
+
+	totient := new(big.Int).Div(PHI, new(big.Int).GCD(nil, nil, pMinusOne, qMinusOne))
 
 	// find a number e such that 1 < e < totient and gcd(e, totient) = 1
 	e := findE(totient)
 
 	// find a number d such that d*e = 1 mod Totient
-	d := calc.ModularInverse(e, totient)
+	d := new(big.Int)
+	inverse := d.ModInverse(e, totient)
+	if inverse == nil {
+		log.Fatalln("Could not find a valid d")
+	}
 
 	//Here we save informations to be used on the decryption process
-	dp := d % (p - 1)
-	dq := d % (q - 1)
+	dp := new(big.Int).Mod(d, pMinusOne)
+	dq := new(big.Int).Mod(d, qMinusOne)
 
-	qinv := calc.ModularInverse(q, p)
+	qinv := new(big.Int)
+	inverse = qinv.ModInverse(q, p)
+
+	if inverse == nil {
+		log.Fatalln("Could not find a valid qinv")
+	}
 
 	return NewRSAkey(e, d, n, p, q, dp, dq, qinv)
 }

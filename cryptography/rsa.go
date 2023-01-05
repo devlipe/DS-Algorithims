@@ -2,9 +2,10 @@ package cryptography
 
 import (
 	"bytes"
-	"encoding/binary"
+	"encoding/gob"
 	"fmt"
 	"log"
+	"math/big"
 
 	"github.com/devlipe/data_structures/calc"
 )
@@ -12,29 +13,40 @@ import (
 func (k *RSAkey) Encrypt(bt []byte) []byte {
 
 	eBuff := new(bytes.Buffer)
-	temp := make([]uint64, 0)
+	enc := gob.NewEncoder(eBuff)
+	temp := make([]big.Int, 0)
+
 	for _, b := range bt {
 
-		temp = append(temp, calc.ModExp(uint64(b), k.e, k.n))
+		a := new(big.Int).Exp(big.NewInt(int64(b)), k.e, k.n)
+		temp = append(temp, *a)
+
 	}
-	err := binary.Write(eBuff, binary.BigEndian, temp)
+	// err := binary.Write(eBuff, binary.BigEndian, temp)
+	err := enc.Encode(temp)
 
 	if err != nil {
-		log.Fatalln("binary.Write failed:", err)
+		log.Fatalln("enc.Encode failed:", err)
 	}
 
 	return eBuff.Bytes()
 }
 
 func (k *RSAkey) Decrypt(bt []byte) []byte {
-	temp := make([]uint64, (len(bt)+7)/8)
+	temp := make([]big.Int, (len(bt)+7)/8)
+
 	buf := bytes.NewBuffer(bt)
-	binary.Read(buf, binary.BigEndian, &temp)
+	dec := gob.NewDecoder(buf)
+	// binary.Read(buf, binary.BigEndian, &temp)
+	err := dec.Decode(&temp)
+	if err != nil {
+		log.Fatalln("dec.Decode failed:", err)
+	}
 	dBuff := new(bytes.Buffer)
 
 	for _, b := range temp {
 
-		a := calc.ChineseRemainderRSA(k.p, k.q, k.dp, k.dq, k.qinv, b)
+		a := calc.ChineseRemainderRSA(k.p, k.q, k.dp, k.dq, k.qinv, &b)
 		dBuff.WriteByte(byte(a))
 	}
 	return dBuff.Bytes()
